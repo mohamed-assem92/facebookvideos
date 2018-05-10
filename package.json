@@ -1,0 +1,32 @@
+{
+  "name": "facebook",
+  "version": "1.0.0",
+  "description": "this app made to collect info about facebook public pages videos",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mohamed-assem92/facebookvideos.git"
+  },
+  "author": "Mohamed Assem",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mohamed-assem92/facebookvideos/issues"
+  },
+  "homepage": "https://github.com/mohamed-assem92/facebookvideos#readme",
+  "dependencies": {
+    "bcrypt": "^1.0.3",
+    "body-parser": "^1.18.2",
+    "express": "^4.16.3",
+    "express-generator": "^4.15.5",
+    "express-jwt-token": "^0.1.5",
+    "jwt-decode": "^2.2.0",
+    "mongoose": "^5.0.11",
+    "morgan": "^1.9.0",
+    "path": "^0.12.7",
+    "uuid": "^3.2.1"
+  }
+}
