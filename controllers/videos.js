@@ -4,49 +4,55 @@ const router = express.Router();
 const https = require('https');
 const path = require('path');
 const fs = require("fs");
-const token = "EAACEdEose0cBAAlsz6Dr5vBr3tjrkY9Ty6DMIn7ibyoZCjZAYvlrXVvieIsM4MWQvqrWJ6abmIHPWtqLGzLBCBDAUzIZCWDztYfZArhQgokeDl6JommWEZBnEsrZBjs5oZAvXvxn3YhxaGevSZBclxLzgPt7MjAVvtjCpgF2rDJr9v2GEIw1aWPO3HhCFOZAcJPEZD";
+const token = "_____Generated_Token_Here_____";
 
 router.get("/:keyWord", function(req, resp) {
-  let pageName = req.params.keyWord;
-  console.log(pageName);
-  getPageInfo(pageName)
+  let pageNameID = req.params.keyWord;
+  let startedTime = Date.now();
+  let pageID = 0;
+  let pageName = '';
+  getPageInfo(pageNameID)
     .then((pageInfo) => {
-      let {
-        id: pageID,
-        name
-      } = JSON.parse(pageInfo);
-      getPageVideos(pageName, 200)
-        .then((videos) => {
-          let {
-            data,
-            paging: {
-              next
-            }
-          } = JSON.parse(videos);
-          let videosCount = data.length;
-          generateArrayOfVideos(data, pageID, name, videosCount)
-            .then((result) => {
-              resp.json({
-                "data": result
-              })
-            })
-            .catch(err => {
-              console.log(err)
-            })
-        })
-        .catch((err) => {
-          console.log(err)
-        })
+      pageInfo = JSON.parse(pageInfo);
+      pageID = pageInfo.id;
+      pageName = pageInfo.name;
+      return getPageVideos(pageNameID, 200)
     })
+    .then((videos) => {
+      let {
+        data
+      } = JSON.parse(videos);
+      let videosCount = data.length;
+        return generateArrayOfVideos(data, pageID, pageName, videosCount)
+    })
+    .then((result) => {
+      writeToFile(result , pageName , resp , startedTime);
+    })
+    .catch(err => sendError(resp , err))
 })
 
-const generateArrayOfVideos = function(data, pageID, name, videosCount) {
+const writeToFile = function(arrayToWrite , pageName , resp , startedTime) {
+  let currentTime = Date.now();
+  arrayToWrite.push({"performed in milliSeconds":(currentTime - startedTime)})
+  let file = JSON.stringify(arrayToWrite);
+  fs.writeFileSync(`./public/pagesData/${pageName}_${currentTime}.json` ,file, 'utf8');
+  resp.status(200).json({
+    "data": arrayToWrite
+  })
+}
+
+const sendError = function(resp , err) {
+  console.log(err);
+  resp.status(404).json({"message":"requested page not found","err":err})
+}
+
+const generateArrayOfVideos = function(data, pageID, pageName, videosCount) {
   let videosArray = [];
   return new Promise((resolve, reject) => {
     data.map((video) => {
-      Promise.all([getVideoInfo(video.id, pageID)])
+      getVideoInfo(video.id, pageID)
         .then((resolvedData) => {
-          let videoData = JSON.parse(resolvedData[0]);
+          let videoData = JSON.parse(resolvedData);
           if (videoData.shares) {
             let {
               likes: {
@@ -66,7 +72,7 @@ const generateArrayOfVideos = function(data, pageID, name, videosCount) {
             videosArray.push({
               "videoID": video.id,
               "videoTitle": video.title,
-              "pageName": name,
+              "pageNameID": pageName,
               "likesCount": likesCount,
               "commentsCount": commentsCount,
               "sharesCount": sharesCount
@@ -87,7 +93,7 @@ const generateArrayOfVideos = function(data, pageID, name, videosCount) {
             videosArray.push({
               "videoID": video.id,
               "videoTitle": video.title,
-              "pageName": name,
+              "pageNameID": pageName,
               "likesCount": likesCount,
               "commentsCount": commentsCount
             });
@@ -104,12 +110,12 @@ const generateArrayOfVideos = function(data, pageID, name, videosCount) {
   })
 }
 
-const getPageVideos = function(pageName, limit) {
-  return request(`https://graph.facebook.com/v3.0/${pageName}/videos?fields=title&limit=${limit}&access_token=${token}`);
+const getPageVideos = function(pageNameID, limit) {
+  return request(`https://graph.facebook.com/v3.0/${pageNameID}/videos?fields=title&limit=${limit}&access_token=${token}`);
 }
 
-const getPageInfo = function(pageName) {
-  return request(`https://graph.facebook.com/v3.0/${pageName}/?access_token=${token}`);
+const getPageInfo = function(pageNameID) {
+  return request(`https://graph.facebook.com/v3.0/${pageNameID}/?access_token=${token}`);
 }
 
 const getVideoInfo = function(videoID, pageID) {
