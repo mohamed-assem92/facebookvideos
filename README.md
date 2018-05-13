@@ -5,8 +5,9 @@
 npm install
 
 ```
-### insert your ACCESS_TOKEN
-#### open videos.js
+### insert your ACCESS_TOKEN which have the Following Scope
+####  {read_insights , manage_pages }
+##### open videos.js file
 
 ```
 const request = require('request-promise');
@@ -32,6 +33,17 @@ facebookPageName = MTVEgyptt;
 
 ```
 https://localhost:9050/api/videos/{facebookPageName}
+
+```
+### the data will be send back to you and will be saved locally too
+
+```
+[
+  {"videoID":"1040923836072303","videoTitle":"يا سيدتي ومولاتي حبي لكي أهديته مراد بوريقي يغني بالمغربي","pageNameID":"برنامج معكم منى الشاذلي","likesCount":35,"commentsCount":3,"sharesCount":5},
+
+  ....,
+  {"performed in Seconds":6273}
+]
 
 ```
 
