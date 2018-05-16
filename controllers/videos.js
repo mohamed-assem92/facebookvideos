@@ -4,7 +4,7 @@ const router = express.Router();
 const https = require('https');
 const path = require('path');
 const fs = require("fs");
-const token = "EAACEdEose0cBAHFcejhGmR7UfTaWsrckZBpt4C1Wdiur60TjnXi1vAwQQj6pK6tcgNweaRFQfbeyDXLkDaSa8ANJCH7aZAMU0t52fcG43RFFAt3HVwUvKC2BTr76exGZCXv6NvflG11EcAUwI5nfdxZBeTEwjUMjFjGpXZCUZCZAImleKtVbSyy8dpJSMRJDYMXD5YLDdq7PgZDZD";
+const token = "__Your___Token____Here";
 
 router.get("/:keyWord", function(req, resp) {
   let pageNameID = req.params.keyWord;
