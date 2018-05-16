@@ -1,8 +1,16 @@
 # facebookvideos
 
+### This application will retrieve latest 200 videos of any facebook page.
+
 ### Setup Dependencies
 ```
 npm install
+
+```
+
+### Run application
+```
+npm start
 
 ```
 ### insert your ACCESS_TOKEN which have the Following Scope
