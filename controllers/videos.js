@@ -4,7 +4,7 @@ const router = express.Router();
 const https = require('https');
 const path = require('path');
 const fs = require("fs");
-const token = "_____Generated_Token_Here_____";
+const token = "EAACEdEose0cBAHFcejhGmR7UfTaWsrckZBpt4C1Wdiur60TjnXi1vAwQQj6pK6tcgNweaRFQfbeyDXLkDaSa8ANJCH7aZAMU0t52fcG43RFFAt3HVwUvKC2BTr76exGZCXv6NvflG11EcAUwI5nfdxZBeTEwjUMjFjGpXZCUZCZAImleKtVbSyy8dpJSMRJDYMXD5YLDdq7PgZDZD";
 
 router.get("/:keyWord", function(req, resp) {
   let pageNameID = req.params.keyWord;
@@ -53,7 +53,6 @@ const generateArrayOfVideos = function(data, pageID, pageName, videosCount) {
       getVideoInfo(video.id, pageID)
         .then((resolvedData) => {
           let videoData = JSON.parse(resolvedData);
-          if (videoData.shares) {
             let {
               likes: {
                 summary: {
@@ -65,9 +64,7 @@ const generateArrayOfVideos = function(data, pageID, pageName, videosCount) {
                   total_count: commentsCount
                 }
               },
-              shares: {
-                count: sharesCount
-              }
+              shares: {count} = {}
             } = videoData;
             videosArray.push({
               "videoID": video.id,
@@ -75,29 +72,8 @@ const generateArrayOfVideos = function(data, pageID, pageName, videosCount) {
               "pageNameID": pageName,
               "likesCount": likesCount,
               "commentsCount": commentsCount,
-              "sharesCount": sharesCount
+              "sharesCount": count
             });
-          } else {
-            let {
-              likes: {
-                summary: {
-                  total_count: likesCount
-                }
-              },
-              comments: {
-                summary: {
-                  total_count: commentsCount
-                }
-              }
-            } = videoData;
-            videosArray.push({
-              "videoID": video.id,
-              "videoTitle": video.title,
-              "pageNameID": pageName,
-              "likesCount": likesCount,
-              "commentsCount": commentsCount
-            });
-          }
           if (videosArray.length == videosCount) {
             resolve(videosArray)
             videosArray = [];
